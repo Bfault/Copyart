@@ -1,4 +1,12 @@
-NAME	=	Copyart
+NAME	:=	Copyart
+
+DATASET_AUTHOR	:=	ikarus777
+DATASET_NAME	:=	best-artworks-of-all-time
+DATASET_PATH	:=	./data
+
+PATH := /home/$(USER)/.local/bin:$(PATH)
+
+.SILENT:
 
 $(NAME):
 	cat $(NAME)
@@ -6,9 +14,10 @@ $(NAME):
 all: $(NAME)
 
 install:
-	pip install -r requirements.txt
-	export PATH="/home/$USER/.local/bin:$PATH"
-	./install_dataset
+	pip install --user -r requirements.txt
+	kaggle datasets download $(DATASET_AUTHOR)/$(DATASET_NAME) -p $(DATASET_PATH)
+	unzip $(DATASET_PATH)/$(DATASET_NAME).zip -d $(DATASET_PATH)
+	rm $(DATASET_PATH)/$(DATASET_NAME).zip
 
 clean_dataset:
 	rm -rf data
