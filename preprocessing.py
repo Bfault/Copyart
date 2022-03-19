@@ -8,14 +8,14 @@ from torch.utils.data import DataLoader
 
 def get_dataloader(path: str, image_size: int, batch_size: int, num_workers: int=4) -> DataLoader:
 
-    transform: transforms.Compose = transforms.Compose([
+    transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    dataset: datasets.ImageFolder = datasets.ImageFolder(root=path, transform=transform)
-    dataloader: DataLoader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, shuffle=True)
+    dataset = datasets.ImageFolder(root=path, transform=transform)
+    dataloader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, shuffle=True)
 
     return dataloader
 
