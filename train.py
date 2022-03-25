@@ -10,10 +10,14 @@ from tqdm import tqdm
 from dataset import ArtImageDataset
 from discriminator import Discriminator
 from generator import Generator
-# from utils import save_checkpoint, load_checkpoint
+from utils import save_checkpoint
 import config
 
+torch.cuda.empty_cache()
+
 def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, disc_dom2: Discriminator, loader: DataLoader, gen_opt: optim.Optimizer, disc_opt: optim.Optimizer, L1: nn.L1Loss, mse: nn.MSELoss, gen_scaler: torch.cuda.amp.GradScaler, disc_scaler: torch.cuda.amp.GradScaler) -> None:
+    image_real = 0
+    image_fake = 0
     loop = tqdm(loader, leave=True)
 
     for idx, (art, image) in enumerate(loop):
@@ -24,11 +28,13 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
             fake_image = gen_dom1(art)
             D_image_real = disc_dom1(image)
             D_image_fake = disc_dom1(fake_image.detach())
+            image_real += D_image_real.mean().item()
+            image_fake += D_image_fake.mean().item()
             D_image_real_loss = mse(D_image_real, torch.ones_like(D_image_real))
             D_image_fake_loss = mse(D_image_fake, torch.zeros_like(D_image_fake))
             D_image_loss = D_image_real_loss + D_image_fake_loss
 
-            fake_art = gen_dom2(art)
+            fake_art = gen_dom2(image)
             D_art_real = disc_dom2(art)
             D_art_fake = disc_dom2(fake_art.detach())
             D_art_real_loss = mse(D_art_real, torch.ones_like(D_art_real))
@@ -50,24 +56,24 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
             G_art_loss = mse(D_art_fake, torch.ones_like(D_art_fake))
 
             # Cycle loss
-            cycle_image = gen_dom2(fake_art)
-            cycle_art = gen_dom1(fake_image)
-            cycle_image_loss = L1(cycle_image, image)
-            cycle_art_loss = L1(cycle_art, art)
+            cycle_art = gen_dom2(fake_image)
+            cycle_image = gen_dom1(fake_art)
+            cycle_image_loss = L1(image, cycle_image)
+            cycle_art_loss = L1(art, cycle_art)
 
             # Identity loss
             identity_image = gen_dom1(image)
             identity_art = gen_dom2(art)
-            identity_image_loss = L1(identity_image, image)
-            identity_art_loss = L1(identity_art, art)
+            # identity_image_loss = L1(identity_image, image)
+            # identity_art_loss = L1(identity_art, art)
 
             G_loss = (
                 G_image_loss +
                 G_art_loss +
                 cycle_image_loss * config.LAMBDA_CYCLE +
-                cycle_art_loss * config.LAMBDA_CYCLE +
-                identity_image_loss * config.LAMBDA_IDENTITY +
-                identity_art_loss * config.LAMBDA_IDENTITY
+                cycle_art_loss * config.LAMBDA_CYCLE# +
+                # identity_image_loss * config.LAMBDA_IDENTITY +
+                # identity_art_loss * config.LAMBDA_IDENTITY
             )
         
         gen_opt.zero_grad()
@@ -76,15 +82,15 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
         gen_scaler.update()
 
         if idx % config.SAVE_INTERVAL == 0:
-            save_image(fake_image*0.5+0.5, f'{config.OUTPUT_PATH}/fake_image_{idx}.png')
-            save_image(fake_art*0.5+0.5, f'{config.OUTPUT_PATH}/fake_art_{idx}.png')
-
+            save_image(fake_art*0.5+0.5, f'{config.OUTPUT_PATH}/{idx}_fake_art.png')
+            save_image(image*0.5+0.5, f'{config.OUTPUT_PATH}/{idx}_real_image.png')
+        
 
 def main():
-    generator_I = Generator(img_channels=3, num_residuals=9).to(config.DEVICE)
+    generator_I = Generator(img_channels=3, num_residuals=6).to(config.DEVICE)
     discriminator_I = Discriminator(in_channels=3).to(config.DEVICE)
 
-    generator_A = Generator(img_channels=3, num_residuals=9).to(config.DEVICE)
+    generator_A = Generator(img_channels=3, num_residuals=6).to(config.DEVICE)
     discriminator_A = Discriminator(in_channels=3).to(config.DEVICE)
 
     discriminator_optimizer = optim.Adam(
@@ -123,11 +129,10 @@ def main():
             disc_scaler=discriminator_scaler,
         )
 
-        # if config.SAVE_MODEL:
-        #     save_checkpoint(generator_I, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_I)
-        #     save_checkpoint(generator_A, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_A)
-        #     save_checkpoint(discriminator_I, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_I)
-        #     save_checkpoint(discriminator_A, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_A)
+        save_checkpoint(generator_I, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_I)
+        save_checkpoint(generator_A, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_A)
+        save_checkpoint(discriminator_I, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_I)
+        save_checkpoint(discriminator_A, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_A)
 
 if __name__ == '__main__':
     main()
