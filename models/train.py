@@ -64,16 +64,20 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
             # Identity loss
             identity_image = gen_dom1(image)
             identity_art = gen_dom2(art)
-            # identity_image_loss = L1(identity_image, image)
-            # identity_art_loss = L1(identity_art, art)
+            if config.LAMBDA_IDENTITY > 0:
+                identity_image_loss = L1(identity_image, image)
+                identity_art_loss = L1(identity_art, art)
+            else:
+                identity_image_loss = 0
+                identity_art_loss = 0
 
             G_loss = (
                 G_image_loss +
                 G_art_loss +
                 cycle_image_loss * config.LAMBDA_CYCLE +
-                cycle_art_loss * config.LAMBDA_CYCLE# +
-                # identity_image_loss * config.LAMBDA_IDENTITY +
-                # identity_art_loss * config.LAMBDA_IDENTITY
+                cycle_art_loss * config.LAMBDA_CYCLE +
+                identity_image_loss * config.LAMBDA_IDENTITY +
+                identity_art_loss * config.LAMBDA_IDENTITY
             )
         
         gen_opt.zero_grad()
@@ -87,10 +91,10 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
         
 
 def main():
-    generator_I = Generator(img_channels=3, num_residuals=6).to(config.DEVICE)
+    generator_I = Generator(input_nc=3, output_nc=3, norm_layer=nn.InstanceNorm2d).to(config.DEVICE)
     discriminator_I = Discriminator(in_channels=3).to(config.DEVICE)
 
-    generator_A = Generator(img_channels=3, num_residuals=6).to(config.DEVICE)
+    generator_A = Generator(input_nc=3, output_nc=3, norm_layer=nn.InstanceNorm2d).to(config.DEVICE)
     discriminator_A = Discriminator(in_channels=3).to(config.DEVICE)
 
     discriminator_optimizer = optim.Adam(
@@ -129,10 +133,10 @@ def main():
             disc_scaler=discriminator_scaler,
         )
 
-        save_checkpoint(generator_I, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_I)
-        save_checkpoint(generator_A, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_A)
-        save_checkpoint(discriminator_I, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_I)
-        save_checkpoint(discriminator_A, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_A)
+        save_checkpoint(generator_I, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_I.format(epoch))
+        save_checkpoint(generator_A, generator_optimizer, filename=config.CHECKPOINT_GENERATOR_A.format(epoch))
+        save_checkpoint(discriminator_I, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_I.format(epoch))
+        save_checkpoint(discriminator_A, discriminator_optimizer, filename=config.CHECKPOINT_DISCRIMINATOR_A.format(epoch))
 
 if __name__ == '__main__':
     main()

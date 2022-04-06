@@ -4,7 +4,7 @@ DATASET_ARTWORKS_AUTHOR	:=	ikarus777
 DATASET_ARTWORKS_NAME	:=	best-artworks-of-all-time
 DATASET_FLICKR_AUTHOR	:=	adityajn105
 DATASET_FLICKR_NAME		:=	flickr8k
-DATASET_PATH			:=	./data
+DATASET_PATH			:=	./datasets
 
 PATH := /home/$(USER)/.local/bin:$(PATH)
 

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+for model in style_monet style_ukiyoe style_cezanne style_vangogh
+do
+    mkdir -p ./checkpoints/${model}_pretrained
+    MODEL_FILE=./checkpoints/${model}_pretrained/latest_net_G.pth
+    URL=http://efrosgans.eecs.berkeley.edu/cyclegan/pretrained_models/${model}.pth
+
+    wget -N $URL -O $MODEL_FILE
+done
