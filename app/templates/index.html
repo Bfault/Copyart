@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css' )}}">
+    <title>Copyart</title>
+</head>
+
+<body>
+    <div class="containers">
+        <div class="container">
+            <div class="card">
+                <div>
+                    <h4>
+                        <p># STEP. 1/2</p>
+                    </h4>
+                    <h2>
+                        <p>Select Image</p>
+                    </h2>
+                </div>
+                <div>
+                    <div class="preview">
+                        <div class="preview-image preview__image">
+                            {% if filename %}
+                            <div>
+                                <img class="image" src="{{ url_for('display_image', filename=filename) }}">
+                                <!-- <img class="image" src="{{ url_for('display_image', filename=result) }}"> -->
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="options">
+                        <div>
+                            <form action="{{ url_for('transform') }}" method="POST" enctype="multipart/form-data">
+                                <input id="input-image" type="file" accept="image/*">
+                                <label for="input-image" class="button input-image">
+                                    <span class="button__deco">
+                                        <span class="button__content">Select from the library</span>
+                                    </span>
+                                </label>
+                            </form>
+                        </div>
+                        <div class="options2">
+                            <div class="select-artists">
+                                <select name="artist">
+                                    {% for artist in artists %}
+                                    <option value="{{ artist.name }}">{{ artist.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <input id="submit" type="submit" value="Submit">
+                                <label for="submit" class="button input-image">
+                                    <span class="button__deco">
+                                        <span class="button__content">Transform</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div>
+                    <h4>
+                        <p># STEP. 2/2</p>
+                    </h4>
+                    <h2>
+                        <p>Download Image</p>
+                    </h2>
+                </div>
+                <div>
+                    <div class="preview">
+                        <div class="preview-image preview__image">
+                            {% if filename %}
+                            <div>
+                                <img class="image" src="{{ url_for('display_image', filename=filename) }}">
+                                <!-- <img class="image" src="{{ url_for('display_image', filename=result) }}"> -->
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="options">
+                        <div>
+                            <form action="{{ url_for('transform') }}" method="POST" enctype="multipart/form-data">
+                                <input id="input-image" type="file" accept="image/*">
+                                <label for="input-image" class="button input-image">
+                                    <span class="button__deco">
+                                        <span class="button__content">Download</span>
+                                    </span>
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

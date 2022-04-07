@@ -1,0 +1,174 @@
+.containers {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    padding: 10px 14px;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.card {
+    width: 100%;
+    background: white;
+    box-shadow: inset 0 0 0 5px rgba(0, 0, 0);
+    padding: 30px 20px;
+}
+
+.rect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 200px;
+    background: gray;
+    border-radius: 10px;
+    border: 3px solid black;
+    font-weight: bold;
+}
+
+.rect:active {
+    background: blue;
+}
+
+#file-input {
+    display: none;
+}
+
+#upload-btn {
+    background: red;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.image {
+    width: 40%;
+    height: auto;
+}
+
+.input-image {
+    background-color: white;
+    color: black;
+    border-color: black;
+    font-size: 18px;
+}
+
+.button {
+    position: relative;
+    display: inline-block;
+    border: 3px solid black;
+    background-color: white;
+}
+
+.button__deco {
+    display: block;
+    padding: 3px 6px;
+    border: 3px solid black;
+}
+
+.button__content {
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    z-index: 1;
+    position: relative;
+    padding: 3px 3px 6px;
+}
+
+.preview {
+    width: 266px;
+    height: 266px;
+    position: relative;
+    margin: 0 auto 15px;
+}
+
+.preview .preview__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.preview-image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 5px dotted black;
+    background-color: white;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.options2 {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.select-artists {
+    margin-right: 10px;
+}
+
+#input-image {
+    display: none;
+}
+
+#submit {
+    display: none;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+h1, h2 {
+    margin: 10px 0 15px;
+}
+
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+h4 {
+    font-weight: bold;
+}
+
+select {
+    font-size: 18px;
+    font-weight: bold;
+    border: solid 3px black;
+    background-color: white;
+}
+
+html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
