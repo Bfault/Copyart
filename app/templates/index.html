@@ -24,17 +24,17 @@
                     <div class="preview">
                         <div class="preview-image preview__image">
                             {% if filename %}
-                            <div>
+                            <div class="center__image">
                                 <img class="image" src="{{ url_for('display_image', filename=filename) }}">
-                                <!-- <img class="image" src="{{ url_for('display_image', filename=result) }}"> -->
                             </div>
                             {% endif %}
                         </div>
                     </div>
                     <div class="options">
                         <div>
-                            <form action="{{ url_for('transform') }}" method="POST" enctype="multipart/form-data">
-                                <input id="input-image" type="file" accept="image/*">
+                            <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+                                <input name="file" id="input-image" type="file" accept="image/*"
+                                    onchange="form.submit()">
                                 <label for="input-image" class="button input-image">
                                     <span class="button__deco">
                                         <span class="button__content">Select from the library</span>
@@ -43,21 +43,23 @@
                             </form>
                         </div>
                         <div class="options2">
-                            <div class="select-artists">
-                                <select name="artist">
-                                    {% for artist in artists %}
-                                    <option value="{{ artist.name }}">{{ artist.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div>
-                                <input id="submit" type="submit" value="Submit">
-                                <label for="submit" class="button input-image">
-                                    <span class="button__deco">
-                                        <span class="button__content">Transform</span>
-                                    </span>
-                                </label>
-                            </div>
+                            <form action="{{ url_for('transform', filename=filename) }}" method="POST">
+                                <div class="select-artists">
+                                    <select name="artist">
+                                        {% for artist in artists %}
+                                        <option value="{{ artist.name }}">{{ artist.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <input id="submit" type="submit" value="Submit">
+                                    <label for="submit" class="button input-image">
+                                        <span class="button__deco">
+                                            <span class="button__content">Transform</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -77,24 +79,21 @@
                 <div>
                     <div class="preview">
                         <div class="preview-image preview__image">
-                            {% if filename %}
-                            <div>
-                                <img class="image" src="{{ url_for('display_image', filename=filename) }}">
-                                <!-- <img class="image" src="{{ url_for('display_image', filename=result) }}"> -->
+                            {% if result %}
+                            <div class="center__image">
+                                <img class="image" src="{{ url_for('display_image', filename=result) }}">
                             </div>
                             {% endif %}
                         </div>
                     </div>
                     <div class="options">
                         <div>
-                            <form action="{{ url_for('transform') }}" method="POST" enctype="multipart/form-data">
-                                <input id="input-image" type="file" accept="image/*">
-                                <label for="input-image" class="button input-image">
-                                    <span class="button__deco">
-                                        <span class="button__content">Download</span>
-                                    </span>
-                                </label>
-                            </form>
+                            <label for="download-image" class="button input-image">
+                                <span class="button__deco">
+                                    <a href="{{ url_for('download', filename=result) }}" download="result"
+                                        class="button__content">Download</a>
+                                </span>
+                            </label>
                         </div>
                     </div>
                 </div>

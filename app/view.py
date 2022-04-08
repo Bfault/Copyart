@@ -1,3 +1,4 @@
+from crypt import methods
 import os
 import sys
 
@@ -33,11 +34,19 @@ def too_large(e):
 
 @app.route('/')
 def index():
-    files = os.listdir(app.config['UPLOAD_PATH'])
-    return render_template('index.html', files=files, artists=ARTISTS)
+    filename = request.args.get('filename')
+    result = request.args.get('result')
+    params = {
+        'artists': ARTISTS
+    }
+    if filename:
+        params['filename'] = filename
+    if result:
+        params['result'] = result
+    return render_template('index.html', **params)
 
-@app.route('/uploads', methods=['POST'])
-def upload_files():
+@app.route('/upload', methods=['POST'])
+def upload_file():
     uploaded_file = request.files['file']
     filename = secure_filename(uploaded_file.filename)
     if filename != '':
@@ -45,43 +54,32 @@ def upload_files():
         if file_ext not in app.config['UPLOAD_EXTENSIONS'] or file_ext != validate_image(uploaded_file.stream):
             return "Invalid image", 400
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-    return render_template('index.html', filename=filename, artists=ARTISTS)
-
-@app.route('/uploads/<filename>')
-def upload(filename):
-    return send_from_directory(app.config['UPLOAD_PATH'], filename)
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/', methods=['POST'])
-def upload_file():
-    uploaded_file = request.files['file']
-    if uploaded_file.filename != '':
-        uploaded_file.save(uploaded_file.filename)
-    return redirect(url_for('index'))
+    return redirect(url_for('index', filename=filename), 301)
 
 @app.route('/transform', methods=['POST'])
 def transform():
+    filename = request.args.get('filename')
     artist_name = request.form['artist']
-    uploaded_file = request.files['file']
 
-    filename = secure_filename(uploaded_file.filename)
     if filename != '':
-        file_ext = os.path.splitext(filename)[1]
-        if file_ext not in app.config['UPLOAD_EXTENSIONS'] or file_ext != validate_image(uploaded_file.stream):
-            return "Invalid image", 400
         path = f"{app.config['UPLOAD_PATH']}/{filename}"
-        uploaded_file.save(path)
         result = transform_image(path, artist_name)
-        print(type(result))
         plt.imsave(f"{app.config['UPLOAD_PATH']}/result_{filename}", result)
-    return render_template('index.html', filename=filename, result=f"result_{filename}", artists=ARTISTS)
+    params = {
+        'filename': filename,
+        'result': f"result_{filename}"
+    }
+    return redirect(url_for('index', **params), 301)
 
 @app.route('/display/<filename>')
 def display_image(filename):
 	return redirect(url_for('static', filename='uploads/' + filename), code=301)
+
+@app.route('/download/<filename>', methods=['GET'])
+def download(filename):
+    uploads = os.path.join(app.root_path, 'static/uploads/')
+    print(uploads)
+    return send_from_directory(directory=uploads, path=filename)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

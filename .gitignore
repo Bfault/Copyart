@@ -132,3 +132,4 @@ data
 checkpoints/*
 datasets/*
 saved_images/*
+app/static/uploads/*
