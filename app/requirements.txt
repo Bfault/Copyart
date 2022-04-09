@@ -1,1 +1,2 @@
 Flask==2.1.1
+filetype==1.0.10

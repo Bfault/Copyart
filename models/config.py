@@ -2,16 +2,20 @@ import torch
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
+ARTISTS = ['Cezanne', 'Monet', 'Ukiyoe', 'Van Gogh']
+
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 SAVE_INTERVAL = 100
 OUTPUT_PATH = './saved_images'
 ARTIST = 'Vincent_van_Gogh'
 ART_IMAGE_PATH = f'./datasets/artworks/images/images/{ARTIST}'
 IMAGE_PATH = './datasets/flickr/Images'
+RESOLUTION = 128
+PROD_RESOLUTION = 1024
 
 TRANSFORM = A.Compose(
     [
-        A.Resize(128, 128),
+        A.Resize(RESOLUTION, RESOLUTION),
         A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5), max_pixel_value=255),
         ToTensorV2()
     ],
@@ -20,7 +24,7 @@ TRANSFORM = A.Compose(
 
 PROD_TRANSFORM = A.Compose(
     [
-        A.Resize(1024, 1024),
+        A.Resize(PROD_RESOLUTION, PROD_RESOLUTION),
         A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5), max_pixel_value=255),
         ToTensorV2()
     ],
