@@ -11,7 +11,7 @@ ARTIST = 'Vincent_van_Gogh'
 ART_IMAGE_PATH = f'./datasets/artworks/images/images/{ARTIST}'
 IMAGE_PATH = './datasets/flickr/Images'
 RESOLUTION = 128
-PROD_RESOLUTION = 1024
+PROD_RESOLUTION = 512
 
 TRANSFORM = A.Compose(
     [
@@ -32,7 +32,7 @@ PROD_TRANSFORM = A.Compose(
 )
 
 BATCH_SIZE = 1
-NUM_EPOCHS = 10
+NUM_EPOCHS = 100
 NUM_WORKERS = 4
 LEARNING_RATE = 2e-4
 LAMBDA_CYCLE = 10
