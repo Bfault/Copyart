@@ -1,25 +1,8 @@
----
-title: "Copyart"
-author: "Lorenzo"
-date: "13/04/2022"
-output: html_document
----
-
-<style type="text/css">
-body{
-    font-family: "Merryweather";
-    font-size: 1.1em;
-    line-height: 1.84;
-    font-weight: 400;
-}
-</style>
-
 # Copyart: transformer votre image dans le style d'un artiste
 
 <img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel.jpg?raw=true" alt="tour eiffel" width="80%">
-<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_ukiyoe.jpg?raw=true" alt="tour eiffel Ukiyoe" width="40%">
-<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_monet.jpg?raw=true" alt="tour eiffel Monet" width="40%">
-
+<img align="left" src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_ukiyoe.jpg?raw=true" alt="tour eiffel Ukiyoe" width="40%">
+<img align="right" src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_monet.jpg?raw=true" alt="tour eiffel Monet" width="40%">
 <figcaption align="center">
     <b>Image dans le style Ukiyoe et Monet</b>
 </figcaption>
