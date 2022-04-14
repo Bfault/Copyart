@@ -122,3 +122,21 @@ la page web à été réalisée avec Flask et ressemble à ceci:
 On peut selectioner une image avec le boutton "select from the library" et l'artiste avec le champs de selection.
 
 Puis transformer l'image avec le boutton "transform" et pouvoir télécharger le résultat avec le boutton "download".
+
+# Conclusion :
+
+Ce projet a été réalisé pour apprendre le fonctionnement du cycleGAN et a été une réussite. Cela m'a aussi permit de voir d'autre notions de deep learning tel que les padding types, les normes, les residuals blocks, etc...
+
+Pour améliorer le projet:
+
+- créer un conteneur docker pour pouvoir deployer la page web (cela permet de pouvoir la lancer indépendamment de l'envirronement)
+
+- une refonte de la page web
+
+# Références:
+
+- [CycleGAN paper](https://arxiv.org/pdf/1703.10593.pdf)
+
+- [mon repo git](https://github.com/Bfault/Copyart)
+
+- [Kaggle (pour trouver les datasets)](https://www.kaggle.com/)
