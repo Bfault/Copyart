@@ -53,7 +53,7 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
             D_image_fake = disc_dom1(fake_image)
             D_art_fake = disc_dom2(fake_art)
             G_image_loss = mse(D_image_fake, torch.ones_like(D_image_fake))
-            G_art_loss = mse(D_art_fake, torch.ones_like(D_art_fake))
+            G_art_loss = mse(D_art_fake, torch.zeros_like(D_art_fake))
 
             # Cycle loss
             cycle_art = gen_dom2(fake_image)

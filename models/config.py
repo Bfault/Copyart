@@ -11,7 +11,7 @@ ARTIST = 'Vincent_van_Gogh'
 ART_IMAGE_PATH = f'./datasets/artworks/images/images/{ARTIST}'
 IMAGE_PATH = './datasets/flickr/Images'
 RESOLUTION = 128
-PROD_RESOLUTION = 512
+PROD_RESOLUTION = 1024
 
 TRANSFORM = A.Compose(
     [
