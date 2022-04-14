@@ -16,9 +16,9 @@ body{
 
 # Copyart: transformer votre image dans le style d'un artiste
 
-<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel.jpg?raw=true" alt="tour eiffel" width="98%">
-<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_ukiyoe.jpg?raw=true" alt="tour eiffel Ukiyoe" width="49%">
-<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_monet.jpg?raw=true" alt="tour eiffel Monet" width="49%">
+<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel.jpg?raw=true" alt="tour eiffel" width="80%">
+<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_ukiyoe.jpg?raw=true" alt="tour eiffel Ukiyoe" width="40%">
+<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/tour_eiffel_monet.jpg?raw=true" alt="tour eiffel Monet" width="40%">
 
 <figcaption align="center">
     <b>Image dans le style Ukiyoe et Monet</b>
@@ -30,7 +30,7 @@ Copyart est un programme qui utilise l'architecture du CycleGAN pour permettre d
 
 Le CycleGAN à été élaboré en 2017 au [BAIR (Berkeley AI Research)](https://arxiv.org/abs/1703.10593), il vient des résaux GAN.
 
-    les GAN (generative adversarial networks) sont des modèles générateurs où 2 réseaux de neuronnes sont mis en compétition, l'un (le générateur) essaye de générer des images aussi réaliste tandis que l'autre (le discriminateur) essaye de détécter si l'image est réel ou non.
+> les GAN (generative adversarial networks) sont des modèles générateurs où 2 réseaux de neuronnes sont mis en compétition, l'un (le générateur) essaye de générer des images aussi réaliste tandis que l'autre (le discriminateur) essaye de détécter si l'image est réel ou non.
 
 Le programme va passer d'un domaine (image) à un autre domaine (oeuvre d'art).
 
@@ -68,17 +68,12 @@ Les données ont été récupérées sur Kaggle:
 
 ---
 
-J'utilise la même architecture que dans le papier de recherche ([rappel](https://arxiv.org/pdf/1703.10593.pdf))
-
-- une taille de batch de 1
-
-- 100 epochs
-
-- un learning rate de 0.0002
-
-- un lambda cycle de 10 (voir après)
-
-- les architectures
+> J'utilise la même architecture que dans le papier de recherche ([rappel](https://arxiv.org/pdf/1703.10593.pdf))
+>- une taille de batch de 1
+>- 100 epochs
+>- un learning rate de 0.0002
+>- un lambda cycle de 10 (défini plus tard)
+>- les architectures
 
 ---
 
@@ -106,11 +101,24 @@ Les discriminateurs utilisent l'architecture du patchGAN.
 
 Le cycleGAN contrairement à un GAN classique utilise plusieurs fonctions de coûts:
 
-- Le coût adversarial (adversarial loss) est le coût de base des GAN, celui que permet de comparer les images générées par le générateur avec les images réelles.
+- L<sub>adv</sub> Le coût adversarial (adversarial loss) est le coût de base des GAN, celui que permet de comparer les images générées par le générateur avec les images réelles.
 
-- Le coût de cohérence du cycle (cycle consistency loss) qui permet de garantir le lien entre l'image donnée et celle générée.
+- L<sub>cyc</sub> Le coût de cohérence du cycle (cycle consistency loss) qui permet de garantir le lien entre l'image donnée et celle générée.
 
-- Le coût d'identité (identity loss) qui permet qu'un générateur d'un domaine A vers un domaine B puisse générer une image identique si une image de domaine B est donnée.
+- L<sub>id</sub> Le coût d'identité (identity loss) qui permet qu'un générateur d'un domaine A vers un domaine B puisse générer une image identique si une image de domaine B est donnée.
 
+Le coût total est égal à L<sub>total</sub> = L<sub>adv</sub> + λ<sub>cyc</sub>L<sub>cyc</sub> + λ<sub>id</sub>L<sub>id</sub>
 
-# Partie 2 : l'utilisation des modèle entrainés
+λ<sub>cyc</sub> et λ<sub>id</sub> sont des hyperparamètres (lambda cycle et lambda id) qui sont modifiables. Dans notre cas lambda id est égal à 0 car cela n'est pas nécessaire (le coût d'identité sert à conserver la couleurs). 
+
+# Partie 2 : l'utilisation des modèles entrainés
+
+Les performances demandées par l'entrainement sont trop élevées pour être réalisées par mon ordinateur, j'ai donc utilisé les modèles pré-entrainés implémentés avec le papier de recherche.
+
+la page web à été réalisée avec Flask et ressemble à ceci:
+
+<img src="https://github.com/Bfault/Copyart/blob/master/example/assets/site.png?raw=true" alt="site">
+
+On peut selectioner une image avec le boutton "select from the library" et l'artiste avec le champs de selection.
+
+Puis transformer l'image avec le boutton "transform" et pouvoir télécharger le résultat avec le boutton "download".
