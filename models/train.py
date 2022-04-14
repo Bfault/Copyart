@@ -15,7 +15,7 @@ import config
 
 torch.cuda.empty_cache()
 
-def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, disc_dom2: Discriminator, loader: DataLoader, gen_opt: optim.Optimizer, disc_opt: optim.Optimizer, L1: nn.L1Loss, mse: nn.MSELoss, gen_scaler: torch.cuda.amp.GradScaler, disc_scaler: torch.cuda.amp.GradScaler) -> None:
+def train(generator_I: Generator, generator_A: Generator, discriminator_I: Discriminator, discriminator_A: Discriminator, loader: DataLoader, gen_opt: optim.Optimizer, disc_opt: optim.Optimizer, L1: nn.L1Loss, mse: nn.MSELoss, gen_scaler: torch.cuda.amp.GradScaler, disc_scaler: torch.cuda.amp.GradScaler) -> None:
     image_real = 0
     image_fake = 0
     loop = tqdm(loader, leave=True)
@@ -25,18 +25,18 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
         image = image.to(config.DEVICE)
 
         with torch.cuda.amp.autocast():
-            fake_image = gen_dom1(art)
-            D_image_real = disc_dom1(image)
-            D_image_fake = disc_dom1(fake_image.detach())
+            fake_image = generator_I(art)
+            D_image_real = discriminator_I(image)
+            D_image_fake = discriminator_I(fake_image.detach())
             image_real += D_image_real.mean().item()
             image_fake += D_image_fake.mean().item()
             D_image_real_loss = mse(D_image_real, torch.ones_like(D_image_real))
             D_image_fake_loss = mse(D_image_fake, torch.zeros_like(D_image_fake))
             D_image_loss = D_image_real_loss + D_image_fake_loss
 
-            fake_art = gen_dom2(image)
-            D_art_real = disc_dom2(art)
-            D_art_fake = disc_dom2(fake_art.detach())
+            fake_art = generator_A(image)
+            D_art_real = discriminator_A(art)
+            D_art_fake = discriminator_A(fake_art.detach())
             D_art_real_loss = mse(D_art_real, torch.ones_like(D_art_real))
             D_art_fake_loss = mse(D_art_fake, torch.zeros_like(D_art_fake))
             D_art_loss = D_art_real_loss + D_art_fake_loss
@@ -50,20 +50,20 @@ def train(gen_dom1: Generator, gen_dom2: Generator, disc_dom1: Discriminator, di
 
         with torch.cuda.amp.autocast():
             # Adversarial loss
-            D_image_fake = disc_dom1(fake_image)
-            D_art_fake = disc_dom2(fake_art)
+            D_image_fake = discriminator_I(fake_image)
+            D_art_fake = discriminator_A(fake_art)
             G_image_loss = mse(D_image_fake, torch.ones_like(D_image_fake))
             G_art_loss = mse(D_art_fake, torch.zeros_like(D_art_fake))
 
             # Cycle loss
-            cycle_art = gen_dom2(fake_image)
-            cycle_image = gen_dom1(fake_art)
+            cycle_art = generator_A(fake_image)
+            cycle_image = generator_I(fake_art)
             cycle_image_loss = L1(image, cycle_image)
             cycle_art_loss = L1(art, cycle_art)
 
             # Identity loss
-            identity_image = gen_dom1(image)
-            identity_art = gen_dom2(art)
+            identity_image = generator_I(image)
+            identity_art = generator_A(art)
             if config.LAMBDA_IDENTITY > 0:
                 identity_image_loss = L1(identity_image, image)
                 identity_art_loss = L1(identity_art, art)
@@ -120,10 +120,10 @@ def main():
 
     for epoch in range(config.NUM_EPOCHS):
         train(
-            gen_dom1=generator_I,
-            gen_dom2=generator_A,
-            disc_dom1=discriminator_I,
-            disc_dom2=discriminator_A,
+            generator_I=generator_I,
+            generator_A=generator_A,
+            discriminator_I=discriminator_I,
+            discriminator_A=discriminator_A,
             loader=loader,
             gen_opt=generator_optimizer,
             disc_opt=discriminator_optimizer,
