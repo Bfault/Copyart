@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  model:
+    build:
+      context: .
+      args:
+        - DATASET_NAME=${KAGGLE_NAME}
+        - DATASET_AUTHOR=${KAGGLE_AUTHOR}
+        - KAGGLE_USERNAME=${KAGGLE_USERNAME}
+        - KAGGLE_KEY=${KAGGLE_KEY}
+        - DATASET_PATH=/dataset
+    volumes:
+      - dataset:/dataset
+
+volumes:
+  dataset:
